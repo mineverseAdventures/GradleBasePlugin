@@ -21,9 +21,9 @@ public class GradleBasePlugin implements Plugin<Project> {
     };
 
     private static final String[] dependencies = new String[]{
-            "compileOnly#org.spigotmc:spigot:1.12.2-R0.1-SNAPSHOT",
-            "compileOnly#org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT",
-            "compileOnly#net.md-5:bungeecord-api:1.12-SNAPSHOT"
+            "org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT",
+//            "compileOnly#org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT",
+//            "compileOnly#net.md-5:bungeecord-api:1.12-SNAPSHOT"
     };
 
     private static final String[] relocations = new String[]{
@@ -86,8 +86,8 @@ public class GradleBasePlugin implements Plugin<Project> {
 
         // Setting properties
         project.setProperty("version", meta.version);
-        project.setProperty("sourceCompatibility", "1.8");
-        project.setProperty("targetCompatibility", "1.8");
+        project.setProperty("sourceCompatibility", "11");
+        project.setProperty("targetCompatibility", "11");
 
         // Setting up repositories
         project.getRepositories().jcenter();
