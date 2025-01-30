@@ -4,7 +4,6 @@ version = '1.0'
 apply plugin: 'java'
 
 apply plugin: 'groovy'
-apply plugin: 'maven'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
