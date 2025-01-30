@@ -8,8 +8,6 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  TECHSCODE_USERNAME: ${{ secrets.TECHSCODE_USERNAME }}
-  TECHSCODE_PASSWORD: ${{ secrets.TECHSCODE_PASSWORD }}
 
 jobs:
   build:
@@ -26,13 +24,7 @@ jobs:
     - name: Grant Gradlew Execute Permission
       run: chmod +x gradlew
 
-    - name: Retrieve Project Info
-      run: |
-        echo "projectGroupId=$(./gradlew properties | grep ^groupId: | cut -c 7-)" >> $GITHUB_ENV
-        echo "projectArtifactId=$(./gradlew properties | grep ^artifactId: | cut -c 7-)" >> $GITHUB_ENV
-        echo "projectName=$(./gradlew properties | grep ^name: | cut -c 7-)" >> $GITHUB_ENV
-        echo "projectVersion=$(./gradlew properties | grep ^version: | cut -c 10-)" >> $GITHUB_ENV
-    
+      
     - name: Publish with Gradle
       run: ./gradlew publish
     
