@@ -24,7 +24,7 @@ jobs:
       uses: actions/setup-java@v4
       with:
         distribution: 'oracle' # See 'Supported distributions' for available options
-        java-version: '11'
+        java-version: '17'
             
     # - name: Cache NMS
     #   id: cache-nms
