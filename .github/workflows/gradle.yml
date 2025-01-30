@@ -1,0 +1,54 @@
+name: Build
+
+on:
+  push:
+    branches: [ main, "2.0" ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  TECHSCODE_USERNAME: ${{ secrets.TECHSCODE_USERNAME }}
+  TECHSCODE_PASSWORD: ${{ secrets.TECHSCODE_PASSWORD }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v1
+      with:
+        java-version: 17
+    
+    - name: Grant Gradlew Execute Permission
+      run: chmod +x gradlew
+
+    - name: Retrieve Project Info
+      run: |
+        echo "projectGroupId=$(./gradlew properties | grep ^groupId: | cut -c 7-)" >> $GITHUB_ENV
+        echo "projectArtifactId=$(./gradlew properties | grep ^artifactId: | cut -c 7-)" >> $GITHUB_ENV
+        echo "projectName=$(./gradlew properties | grep ^name: | cut -c 7-)" >> $GITHUB_ENV
+        echo "projectVersion=$(./gradlew properties | grep ^version: | cut -c 10-)" >> $GITHUB_ENV
+    
+    - name: Publish with Gradle
+      run: ./gradlew publish
+    
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      with:
+        tag_name: build-${{ github.run_number }}
+        release_name: Release ${{ env.projectVersion }} build-${{ github.run_number }}
+        body: ${{ join(github.event.commits.*.message, ' || ') }}
+
+    - name: Upload Release Asset
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: build/libs/${{ env.projectName }}-${{ env.projectVersion }}.jar
+        asset_name: ${{ env.projectName }}.jar
+        asset_content_type: application/java-archive
