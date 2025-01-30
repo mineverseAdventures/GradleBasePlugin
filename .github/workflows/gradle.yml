@@ -14,7 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write  # if you have a protection rule on your repository, you'll need to give write permission to the workflow.
-
+      discussions: write
+      
     steps:
     - uses: actions/checkout@v2
     
