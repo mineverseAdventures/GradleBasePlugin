@@ -2,27 +2,45 @@ name: Build
 
 on:
   push:
-    branches: [ main, "2.0" ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
 env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  path: build/libs/GradleBasePlugin.jar
+  name: GradleBasePlugin.jar
+  nmsVersion: "1.21.4"
+  build: build-${{ github.run_number }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
       contents: write  # if you have a protection rule on your repository, you'll need to give write permission to the workflow.
-      discussions: write
-      
+
     steps:
     - uses: actions/checkout@v2
-    
     - name: Set up JDK 17
-      uses: actions/setup-java@v1
+      uses: actions/setup-java@v4
       with:
-        java-version: 11
+        distribution: 'oracle' # See 'Supported distributions' for available options
+        java-version: '11'
+            
+    # - name: Cache NMS
+    #   id: cache-nms
+    #   uses: actions/cache@v1
+    #   with:
+    #     path: nms-build/.m2/repository/
+    #     key: ${{ runner.os }}-${{ env.nmsVersion }}-nms
+    
+    # - name: Build NMS
+    #   if: steps.cache-nms.outputs.cache-hit != 'true'
+    #   uses: derongan/nmsaction@v1
+    #   with:
+    #     rev: ${{ env.nmsVersion }}
+    
+    # - name: Install NMS
+    #   run: mkdir -p $HOME/.m2/repository && cp -a nms-build/.m2/repository/* $HOME/.m2/repository    
     
     - name: Grant Gradlew Permissions
       run: chmod +x gradlew
@@ -36,9 +54,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: build-${{ github.run_number }}
-        release_name: Release ${{ env.projectVersion }} build-${{ github.run_number }}
-        body: ${{ join(github.event.commits.*.message, ' || ') }}
+        tag_name: ${{ env.build }}
+        release_name: Release ${{ env.build }}
     
     - name: Upload Release Asset
       id: upload-release-asset 
@@ -47,6 +64,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: build/libs/${{ env.projectName }}-${{ env.projectVersion }}.jar
-        asset_name: ${{ env.projectName }}.jar
+        asset_path: ${{ env.path }}
+        asset_name: ${{ env.name }}
         asset_content_type: application/java-archive
