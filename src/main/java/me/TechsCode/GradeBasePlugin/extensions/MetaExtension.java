@@ -12,16 +12,13 @@ public class MetaExtension {
     public String loadAfter, loadBefore, load;
 
     public boolean validate() {
-        if(version == null){
+        if (version == null) {
             GradleBasePlugin.log("Could not find a 'meta' section with a 'version' field in your build.gradle");
             GradleBasePlugin.log();
-            GradleBasePlugin.log(Color.RED+"Please check the GitHub page of GradleBasePlugin for more information");
+            GradleBasePlugin.log(Color.RED + "Please check the GitHub page of GradleBasePlugin for more information");
             return true;
         }
 
         return false;
     }
-
 }
-
-

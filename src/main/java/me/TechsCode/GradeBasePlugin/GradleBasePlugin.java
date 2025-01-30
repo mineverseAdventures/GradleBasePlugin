@@ -68,14 +68,14 @@ public class GradleBasePlugin implements Plugin<Project> {
     private void onProjectEvaluation(Project project){
         if(meta.validate()) return;
 
-        log(Color.GREEN_BOLD_BRIGHT+"Configuring Gradle Project - Build Settings...");
+        log(Color.BLUE_BOLD_BRIGHT + "Configuring Gradle Project - Build Settings...");
         log();
         log("Project Info:");
-        log("Plugin: "+project.getName()+" on Version: "+meta.version);
+        log("Plugin: " + project.getName() + " on Version: " + meta.version);
         log();
 
-        if(!meta.baseVersion.equalsIgnoreCase("none")){
-            if(ResourceManager.loadBasePlugin(project, githubToken, meta.baseVersion)){
+        if(!meta.baseVersion.equalsIgnoreCase("none")) {
+            if(ResourceManager.loadBasePlugin(project, githubToken, meta.baseVersion)) {
                 log("Successfully retrieved BasePlugin.jar from Github...");
                 project.getDependencies().add("implementation", project.files("libs/BasePlugin.jar"));
             } else {
@@ -118,7 +118,7 @@ public class GradleBasePlugin implements Plugin<Project> {
     }
 
     public static void log(String message){
-        System.out.println(Color.BLACK_BOLD+message);
+        System.out.println(Color.RESET + message + Color.RESET);
     }
 
     public static void log(){

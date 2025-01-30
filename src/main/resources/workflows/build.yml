@@ -34,10 +34,10 @@ jobs:
         with:
           rev: ${{ env.nmsVersion }}
 
-      - name: Install nms into m2
+      - name: Install NMS
         run: mkdir -p $HOME/.m2/repository && cp -a nms-build/.m2/repository/* $HOME/.m2/repository
 
-      - name: Grant execute permission for gradlew
+      - name: Grant Gradlew Permissions
         run: chmod +x gradlew
 
       - name: Build with Gradle
@@ -48,9 +48,8 @@ jobs:
 
       - name: Retrieve Project Name & Version
         run: |
-          echo ::set-env name=projectName::$(./gradlew properties | grep ^name: | cut -c 7-)
-          echo ::set-env name=projectVersion::$(./gradlew properties | grep ^version: | cut -c 10-)
-
+          echo "projectName=$(./gradlew properties | grep ^name: | cut -c 7-)" >> $GITHUB_ENV
+          echo "projectVersion=$(./gradlew properties | grep ^version: | cut -c 10-)" >> $GITHUB_ENV
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1

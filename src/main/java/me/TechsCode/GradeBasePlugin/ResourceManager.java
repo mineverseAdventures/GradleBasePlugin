@@ -1,6 +1,5 @@
 package me.TechsCode.GradeBasePlugin;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.gradle.api.Project;
 import org.json.simple.JSONArray;
@@ -25,16 +24,16 @@ import java.nio.file.StandardCopyOption;
 
 public class ResourceManager {
 
-    public static boolean loadBasePlugin(Project project, String githubToken, String version){
-        if(githubToken == null) return false;
+    public static boolean loadBasePlugin(Project project, String githubToken, String version) {
+        if (githubToken == null) return false;
 
-        File libraryFolder = new File(project.getProjectDir().getAbsolutePath()+"/libs");
+        File libraryFolder = new File(project.getProjectDir().getAbsolutePath() + "/libs");
         libraryFolder.mkdirs();
 
-        File libraryFile = new File(libraryFolder.getAbsolutePath()+"/BasePlugin.jar");
+        File libraryFile = new File(libraryFolder.getAbsolutePath() + "/BasePlugin.jar");
         libraryFile.delete();
 
-        String RETRIEVE_RELEASES = "https://api.github.com/repos/mineverseAdventures/BasePlugin/releases/tags/"+version+"?access_token="+githubToken;
+        String RETRIEVE_RELEASES = "https://api.github.com/repos/techscode/baseplugin/releases/tags/" + version + "?access_token=" + githubToken;
 
         try {
             JSONParser parser = new JSONParser();
@@ -46,7 +45,7 @@ public class ResourceManager {
 
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
             connection.setRequestProperty("Accept", "application/octet-stream");
-            connection.setRequestProperty("Authorization", "token "+githubToken);
+            connection.setRequestProperty("Authorization", "token " + githubToken);
 
             ReadableByteChannel uChannel = Channels.newChannel(connection.getInputStream());
             FileOutputStream foStream = new FileOutputStream(libraryFile.getAbsolutePath());
@@ -65,16 +64,14 @@ public class ResourceManager {
 
     public static void createGitIgnore(Project project) throws IOException {
         InputStream src = ResourceManager.class.getResourceAsStream("/gitignore.file");
-        Files.copy(src, Paths.get(new File(project.getProjectDir().getAbsolutePath()+"/.gitignore").toURI()), StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(src, Paths.get(new File(project.getProjectDir().getAbsolutePath() + "/.gitignore").toURI()), StandardCopyOption.REPLACE_EXISTING);
     }
 
     public static void createWorkflow(Project project) throws IOException {
-        File destination = new File(project.getProjectDir().getAbsolutePath()+"/.github/workflows/build.yml");
+        File destination = new File(project.getProjectDir().getAbsolutePath() + "/.github/workflows/build.yml");
         destination.mkdirs();
 
         InputStream src = ResourceManager.class.getResourceAsStream("/workflows/build.yml");
         Files.copy(src, Paths.get(destination.toURI()), StandardCopyOption.REPLACE_EXISTING);
     }
-
-
 }

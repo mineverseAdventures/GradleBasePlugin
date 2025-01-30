@@ -1,0 +1,39 @@
+group = 'me.TechsCode'
+version = '1.0'
+
+apply plugin: 'java'
+
+apply plugin: 'groovy'
+apply plugin: 'maven'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    compileOnly localGroovy()
+
+    compileOnly gradleApi()
+
+    implementation group: 'commons-io', name: 'commons-io', version: '2.6'
+    implementation "com.googlecode.json-simple:json-simple:1.1.1"
+//    implementation "com.github.johnrengelman.shadow:6.1.0"
+    implementation 'com.github.johnrengelman.shadow:com.github.johnrengelman.shadow.gradle.plugin:7.1.2'
+
+    implementation "com.googlecode.json-simple:json-simple:1.1.1"
+    implementation 'com.jcraft:jsch:0.1.55'
+}
+
+repositories {
+    mavenCentral()
+    gradlePluginPortal()
+    mavenLocal()
+    jcenter()
+    maven {
+        url 'https://plugins.gradle.org/m2/'
+    }
+}
+
+// Removing Version from Output File
+jar {
+    version = null
+}
