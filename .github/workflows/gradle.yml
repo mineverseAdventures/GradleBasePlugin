@@ -35,8 +35,9 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ env.build }}
-        release_name: Release ${{ env.build }}
+        tag_name: build-${{ github.run_number }}
+        release_name: Release ${{ env.projectVersion }} build-${{ github.run_number }}
+        body: ${{ join(github.event.commits.*.message, ' || ') }}
     
     - name: Upload Release Asset
       id: upload-release-asset 
