@@ -21,9 +21,9 @@ public class GradleBasePlugin implements Plugin<Project> {
     };
 
     private static final String[] dependencies = new String[]{
-            "compileOnly#org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT",
-//            "compileOnly#org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT",
-            "compileOnly#net.md-5:bungeecord-api:1.19-R0.1-SNAPSHOT"
+            "compileOnly#org.spigotmc:spigot-api:1.21.4-R0.1-SNAPSHOT",
+            "compileOnly#net.md-5:bungeecord-api:1.21-R0.1-SNAPSHOT"
+
     };
 
     private static final String[] relocations = new String[]{
@@ -96,7 +96,8 @@ public class GradleBasePlugin implements Plugin<Project> {
         Arrays.stream(repositories).forEach(url -> project.getRepositories().maven((maven) -> maven.setUrl(url)));
 
         // Setting up dependencies
-        Arrays.stream(dependencies).map(entry -> entry.split("#")).forEach(confAndUrl -> project.getDependencies().add(confAndUrl[0], confAndUrl[1]));
+        Arrays.stream(dependencies).map(entry -> entry.split("#"))
+                .forEach(confAndUrl -> project.getDependencies().add(confAndUrl[0], confAndUrl[1]));
 
         // Setting up relocations
         Arrays.stream(relocations).map(entry -> entry.split("#")).forEach(fromTo -> getShadowJar(project).relocate(fromTo[0], fromTo[1].replace("PROJECT_NAME", project.getName())));
