@@ -36,12 +36,12 @@ public class ResourceManager {
         String RETRIEVE_RELEASES = "https://panel.mineverseadventures.com/dl/" + version + "/access_token=" + githubToken;
 
         try {
-            JSONParser parser = new JSONParser();
-            String json = IOUtils.toString(new URI(RETRIEVE_RELEASES), "UTF-8");
-            JSONObject root = (JSONObject) parser.parse(json);
-            JSONArray assets = (JSONArray) root.get("assets");
-            JSONObject asset = (JSONObject) assets.get(0);
-            URL url = new URL((String) asset.get("url"));
+//            JSONParser parser = new JSONParser();
+//            String json = IOUtils.toString(new URI(RETRIEVE_RELEASES), "UTF-8");
+//            JSONObject root = (JSONObject) parser.parse(json);
+//            JSONArray assets = (JSONArray) root.get("assets");
+//            JSONObject asset = (JSONObject) assets.get(0);
+            URL url = new URL(RETRIEVE_RELEASES+"/BasePlugin.jar");
 
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
             connection.setRequestProperty("Accept", "application/octet-stream");
@@ -54,7 +54,7 @@ public class ResourceManager {
             uChannel.close();
             foStream.close();
             fChannel.close();
-        } catch (IOException | URISyntaxException | ParseException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
