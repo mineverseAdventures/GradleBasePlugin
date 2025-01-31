@@ -21,9 +21,9 @@ public class GradleBasePlugin implements Plugin<Project> {
     };
 
     private static final String[] dependencies = new String[]{
-            "org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT",
+            "compileOnly#org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT",
 //            "compileOnly#org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT",
-//            "compileOnly#net.md-5:bungeecord-api:1.12-SNAPSHOT"
+            "compileOnly#net.md-5:bungeecord-api:1.19-R0.1-SNAPSHOT"
     };
 
     private static final String[] relocations = new String[]{
