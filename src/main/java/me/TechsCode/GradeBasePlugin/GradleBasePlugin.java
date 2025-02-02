@@ -96,6 +96,8 @@ public class GradleBasePlugin implements Plugin<Project> {
         Arrays.stream(repositories).forEach(url -> project.getRepositories().maven((maven) -> maven.setUrl(url)));
 
         // Setting up dependencies
+        System.out.println(dependencies.length);
+        System.out.println(dependencies);
         Arrays.stream(dependencies).map(entry -> entry.split("#"))
                 .forEach(confAndUrl -> project.getDependencies().add(confAndUrl[0], confAndUrl[1]));
 
