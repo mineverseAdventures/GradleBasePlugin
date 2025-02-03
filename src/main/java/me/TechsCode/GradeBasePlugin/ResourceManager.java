@@ -33,7 +33,8 @@ public class ResourceManager {
         File libraryFile = new File(libraryFolder.getAbsolutePath() + "/BasePlugin.jar");
         libraryFile.delete();
 
-        String RETRIEVE_RELEASES = "https://api.github.com/repos/mineverseAdventures/BasePlugin/releases/tags/" + version + "?access_token=" + githubToken;
+        String RETRIEVE_RELEASES = "https://api.github.com/repos/mineverseAdventures/BasePlugin/releases/tags/" + version;
+        System.out.println("https://api.github.com/repos/mineverseAdventures/BasePlugin/releases/tags/" + version + "?access_token=" + githubToken);
 
         try {
             JSONParser parser = new JSONParser();
@@ -42,6 +43,7 @@ public class ResourceManager {
             JSONArray assets = (JSONArray) root.get("assets");
             JSONObject asset = (JSONObject) assets.get(0);
             URL url = new URL(RETRIEVE_RELEASES+"/BasePlugin.jar");
+            System.out.println(url);
 
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
             connection.setRequestProperty("Accept", "application/octet-stream");
