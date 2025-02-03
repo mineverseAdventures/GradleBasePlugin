@@ -37,6 +37,7 @@ public class ResourceManager {
 
         try {
             JSONParser parser = new JSONParser();
+            System.out.println(parser);
             String json = IOUtils.toString(new URI(RETRIEVE_RELEASES), "UTF-8");
             JSONObject root = (JSONObject) parser.parse(json);
             System.out.println(json);
