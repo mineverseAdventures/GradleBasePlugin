@@ -33,8 +33,8 @@ public class ResourceManager {
         File libraryFile = new File(libraryFolder.getAbsolutePath() + "/BasePlugin.jar");
         libraryFile.delete();
 
-        String RETRIEVE_RELEASES = "https://api.github.com/mineverseAdventures/BasePlugin/releases/tag/" + version;
-        System.out.println("https://api.github.com/mineverseAdventures/BasePlugin/releases/tag/" + version + "?access_token=" + githubToken);
+        String RETRIEVE_RELEASES = "https://api.github.com/repos/mineverseAdventures/BasePlugin/releases/tags/" + version;
+        System.out.println("https://api.github.com/repos/mineverseAdventures/BasePlugin/releases/tags/" + version + "?access_token=" + githubToken);
 
         try {
             JSONParser parser = new JSONParser();
