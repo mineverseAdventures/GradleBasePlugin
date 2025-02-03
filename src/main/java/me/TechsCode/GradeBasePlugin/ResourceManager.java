@@ -34,28 +34,38 @@ public class ResourceManager {
         libraryFile.delete();
 
         String RETRIEVE_RELEASES = "https://api.github.com/repos/mineverseAdventures/BasePlugin/releases/tags/" + version;
-        System.out.println("https://api.github.com/repos/mineverseAdventures/BasePlugin/releases/tags/" + version + "?access_token=" + githubToken);
 
         try {
             JSONParser parser = new JSONParser();
             String json = IOUtils.toString(new URI(RETRIEVE_RELEASES), "UTF-8");
             JSONObject root = (JSONObject) parser.parse(json);
             JSONArray assets = (JSONArray) root.get("assets");
-            JSONObject asset = (JSONObject) assets.get(0);
-            URL url = new URL(RETRIEVE_RELEASES+"/BasePlugin.jar");
-            System.out.println(url);
+            if (assets.isEmpty()) {
+                System.err.println("No assets found for the specified version.");
+                return false;
+            }
 
-            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+            // Get the first asset's download URL
+            JSONObject asset = (JSONObject) assets.get(0);
+            String assetDownloadUrl = (String) asset.get("url");
+
+            // Download the asset
+            HttpsURLConnection connection = (HttpsURLConnection) new URL(assetDownloadUrl).openConnection();
             connection.setRequestProperty("Accept", "application/octet-stream");
             connection.setRequestProperty("Authorization", "token " + githubToken);
 
-            ReadableByteChannel uChannel = Channels.newChannel(connection.getInputStream());
-            FileOutputStream foStream = new FileOutputStream(libraryFile.getAbsolutePath());
-            FileChannel fChannel = foStream.getChannel();
-            fChannel.transferFrom(uChannel, 0, Long.MAX_VALUE);
-            uChannel.close();
-            foStream.close();
-            fChannel.close();
+            // Check the response code
+            int responseCode = connection.getResponseCode();
+            if (responseCode != HttpsURLConnection.HTTP_OK) {
+                System.err.println("Failed to download asset. Response Code: " + responseCode);
+                return false;
+            }
+
+            try (ReadableByteChannel uChannel = Channels.newChannel(connection.getInputStream());
+                 FileOutputStream foStream = new FileOutputStream(libraryFile)) {
+                FileChannel fChannel = foStream.getChannel();
+                fChannel.transferFrom(uChannel, 0, Long.MAX_VALUE);
+            }
         } catch (IOException | ParseException e) {
             e.printStackTrace();
             return false;
@@ -65,6 +75,48 @@ public class ResourceManager {
 
         return true;
     }
+
+//    public static boolean loadBasePlugin(Project project, String githubToken, String version) {
+//        if (githubToken == null) return false;
+//
+//        File libraryFolder = new File(project.getProjectDir().getAbsolutePath() + "/libs");
+//        libraryFolder.mkdirs();
+//
+//        File libraryFile = new File(libraryFolder.getAbsolutePath() + "/BasePlugin.jar");
+//        libraryFile.delete();
+//
+//        String RETRIEVE_RELEASES = "https://api.github.com/repos/mineverseAdventures/BasePlugin/releases/tags/" + version;
+//        System.out.println("https://api.github.com/repos/mineverseAdventures/BasePlugin/releases/tags/" + version + "?access_token=" + githubToken);
+//
+//        try {
+//            JSONParser parser = new JSONParser();
+//            String json = IOUtils.toString(new URI(RETRIEVE_RELEASES), "UTF-8");
+//            JSONObject root = (JSONObject) parser.parse(json);
+//            JSONArray assets = (JSONArray) root.get("assets");
+//            JSONObject asset = (JSONObject) assets.get(0);
+//            URL url = new URL(RETRIEVE_RELEASES+"/BasePlugin.jar");
+//            System.out.println(url);
+//
+//            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+//            connection.setRequestProperty("Accept", "application/octet-stream");
+//            connection.setRequestProperty("Authorization", "token " + githubToken);
+//
+//            ReadableByteChannel uChannel = Channels.newChannel(connection.getInputStream());
+//            FileOutputStream foStream = new FileOutputStream(libraryFile.getAbsolutePath());
+//            FileChannel fChannel = foStream.getChannel();
+//            fChannel.transferFrom(uChannel, 0, Long.MAX_VALUE);
+//            uChannel.close();
+//            foStream.close();
+//            fChannel.close();
+//        } catch (IOException | ParseException e) {
+//            e.printStackTrace();
+//            return false;
+//        } catch (URISyntaxException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        return true;
+//    }
 
     public static void createGitIgnore(Project project) throws IOException {
         InputStream src = ResourceManager.class.getResourceAsStream("/gitignore.file");
