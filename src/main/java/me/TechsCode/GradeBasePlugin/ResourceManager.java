@@ -47,18 +47,16 @@ public class ResourceManager {
             String json = IOUtils.toString(new URI(RETRIEVE_RELEASES), "UTF-8");
             JSONObject root = (JSONObject) parser.parse(json);
 
-            System.out.println(json);
-            System.out.println(root);
             JSONArray assets = (JSONArray) root.get("assets");
-
             JSONObject asset = (JSONObject) assets.get(0);
-            URL url = new URL(RETRIEVE_RELEASES+"/BasePlugin.jar");
+            URL url = new URL((String) asset.get("url"));
             System.out.println(url);
 
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
             connection.setRequestProperty("Accept", "application/octet-stream");
 //            connection.setRequestProperty("Authorization", "token " + githubToken);
             connection.setRequestProperty("Authorization", "Bearer " + githubToken);
+            connection.setRequestMethod("GET");
 
             ReadableByteChannel uChannel = Channels.newChannel(connection.getInputStream());
             FileOutputStream foStream = new FileOutputStream(libraryFile.getAbsolutePath());
