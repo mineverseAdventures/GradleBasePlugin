@@ -25,6 +25,8 @@ import java.nio.file.StandardCopyOption;
 public class ResourceManager {
 
     public static boolean loadBasePlugin(Project project, String githubToken, String version) {
+
+        isTokenValid(githubToken);
         if (githubToken == null) return false;
 
         File libraryFolder = new File(project.getProjectDir().getAbsolutePath() + "/libs");
@@ -37,9 +39,9 @@ public class ResourceManager {
 
         try {
             JSONParser parser = new JSONParser();
-            System.out.println(parser);
             String json = IOUtils.toString(new URI(RETRIEVE_RELEASES), "UTF-8");
             JSONObject root = (JSONObject) parser.parse(json);
+
             System.out.println(json);
             System.out.println(root);
             JSONArray assets = (JSONArray) root.get("assets");
@@ -50,7 +52,8 @@ public class ResourceManager {
 
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
             connection.setRequestProperty("Accept", "application/octet-stream");
-            connection.setRequestProperty("Authorization", "token " + githubToken);
+//            connection.setRequestProperty("Authorization", "token " + githubToken);
+            connection.setRequestProperty("Authorization", "Bearer " + githubToken);
 
             ReadableByteChannel uChannel = Channels.newChannel(connection.getInputStream());
             FileOutputStream foStream = new FileOutputStream(libraryFile.getAbsolutePath());
@@ -68,7 +71,20 @@ public class ResourceManager {
 
         return true;
     }
+    private static boolean isTokenValid(String token) {
+        try {
+            URL url = new URL("https://api.github.com/user"); // Endpoint to check the token
+            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+            connection.setRequestProperty("Authorization", "Bearer " + token);
+            connection.setRequestMethod("GET");
 
+            int responseCode = connection.getResponseCode();
+            System.out.println( "Response Code : " + responseCode);
+            return responseCode == HttpsURLConnection.HTTP_OK; // Return true if the token is valid
+        } catch (IOException e) {
+            e.printStackTrace(); // Log the exception if needed
+            return false; // Assume invalid if an exception occurs
+        }
     public static void createGitIgnore(Project project) throws IOException {
         InputStream src = ResourceManager.class.getResourceAsStream("/gitignore.file");
         Files.copy(src, Paths.get(new File(project.getProjectDir().getAbsolutePath() + "/.gitignore").toURI()), StandardCopyOption.REPLACE_EXISTING);
