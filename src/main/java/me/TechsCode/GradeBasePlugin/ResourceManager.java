@@ -39,7 +39,7 @@ public class ResourceManager {
 
         File libraryFile = new File(libraryFolder.getAbsolutePath() + "/BasePlugin.jar");
         libraryFile.delete();
-
+        System.out.println("Version" + version);
         String RETRIEVE_RELEASES = "https://api.github.com/repos/mineverseAdventures/BasePlugin/releases/tags/" + version;
 
         try {
