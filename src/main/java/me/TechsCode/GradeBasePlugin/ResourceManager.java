@@ -79,12 +79,13 @@ public class ResourceManager {
             connection.setRequestMethod("GET");
 
             int responseCode = connection.getResponseCode();
-            System.out.println( "Response Code : " + responseCode);
+            System.out.println("Response Code : " + responseCode);
             return responseCode == HttpsURLConnection.HTTP_OK; // Return true if the token is valid
         } catch (IOException e) {
             e.printStackTrace(); // Log the exception if needed
             return false; // Assume invalid if an exception occurs
         }
+    }
     public static void createGitIgnore(Project project) throws IOException {
         InputStream src = ResourceManager.class.getResourceAsStream("/gitignore.file");
         Files.copy(src, Paths.get(new File(project.getProjectDir().getAbsolutePath() + "/.gitignore").toURI()), StandardCopyOption.REPLACE_EXISTING);
