@@ -75,12 +75,16 @@ public class GradleBasePlugin implements Plugin<Project> {
         log();
 
         if(!meta.baseVersion.equalsIgnoreCase("none")) {
-            if(ResourceManager.loadBasePlugin(project, githubToken, meta.baseVersion)) {
-                log("Successfully retrieved BasePlugin.jar from Github...");
-                project.getDependencies().add("implementation", project.files("libs/BasePlugin.jar"));
-            } else {
-                log(Color.RED+"Could not retrieve BasePlugin.jar from Github... Using older build if available");
-                log(Color.RED+"Make sure that you have set the GITHUB_TOKEN environment variable that has access to the BasePlugin repository");
+            try {
+                if(ResourceManager.loadBasePlugin(project, githubToken, meta.baseVersion)) {
+                    log("Successfully retrieved BasePlugin.jar from Github...");
+                    project.getDependencies().add("implementation", project.files("libs/BasePlugin.jar"));
+                } else {
+                    log(Color.RED+"Could not retrieve BasePlugin.jar from Github... Using older build if available");
+                    log(Color.RED+"Make sure that you have set the GITHUB_TOKEN environment variable that has access to the BasePlugin repository");
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
 

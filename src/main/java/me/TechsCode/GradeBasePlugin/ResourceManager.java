@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.ProtocolException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -24,7 +25,7 @@ import java.nio.file.StandardCopyOption;
 
 public class ResourceManager {
 
-    public static boolean loadBasePlugin(Project project, String githubToken, String version) {
+    public static boolean loadBasePlugin(Project project, String githubToken, String version) throws IOException {
 
         if (!isTokenValid(githubToken)) {
             System.out.println("Invalid token. Please check your Bearer token.");
@@ -42,6 +43,12 @@ public class ResourceManager {
         System.out.println("Version" + version);
         String RETRIEVE_RELEASES = "https://api.github.com/repos/mineverseAdventures/BasePlugin/releases/tags/" + version;
 
+        URL url = new URL(RETRIEVE_RELEASES);
+        HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization", "Bearer " + githubToken);
+        connection.setRequestMethod("GET");
+
+
         try {
             JSONParser parser = new JSONParser();
             String json = IOUtils.toString(new URI(RETRIEVE_RELEASES), "UTF-8");
@@ -52,13 +59,13 @@ public class ResourceManager {
             System.out.println(asset);
             System.out.println(asset.get("url"));
 
-            URL url = new URL((String) asset.get("url"));
+            URL url2 = new URL((String) asset.get("url"));
 
-            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-            connection.setRequestProperty("Accept", "application/octet-stream");
+            HttpsURLConnection connection2 = (HttpsURLConnection) url2.openConnection();
+            connection2.setRequestProperty("Accept", "application/octet-stream");
 //            connection.setRequestProperty("Authorization", "token " + githubToken);
-            connection.setRequestProperty("Authorization", "Bearer " + githubToken);
-            connection.setRequestMethod("GET");
+            connection2.setRequestProperty("Authorization", "Bearer " + githubToken);
+            connection2.setRequestMethod("GET");
 
             ReadableByteChannel uChannel = Channels.newChannel(connection.getInputStream());
             FileOutputStream foStream = new FileOutputStream(libraryFile.getAbsolutePath());
