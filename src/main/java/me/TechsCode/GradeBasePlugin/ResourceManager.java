@@ -49,8 +49,10 @@ public class ResourceManager {
 
             JSONArray assets = (JSONArray) root.get("assets");
             JSONObject asset = (JSONObject) assets.get(0);
+            System.out.println(asset);
+            System.out.println(asset.get("url"));
+
             URL url = new URL((String) asset.get("url"));
-            System.out.println(url);
 
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
             connection.setRequestProperty("Accept", "application/octet-stream");
