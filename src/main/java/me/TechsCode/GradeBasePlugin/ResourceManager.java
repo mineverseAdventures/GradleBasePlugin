@@ -26,7 +26,12 @@ public class ResourceManager {
 
     public static boolean loadBasePlugin(Project project, String githubToken, String version) {
 
-        isTokenValid(githubToken);
+        if (!isTokenValid(githubToken)) {
+            System.out.println("Invalid token. Please check your Bearer token.");
+            return false;
+        }else{
+            System.out.println("Valid token.");
+        }
         if (githubToken == null) return false;
 
         File libraryFolder = new File(project.getProjectDir().getAbsolutePath() + "/libs");
@@ -79,7 +84,7 @@ public class ResourceManager {
             connection.setRequestMethod("GET");
 
             int responseCode = connection.getResponseCode();
-            System.out.println("Response Code : " + responseCode);
+            System.out.println("Response Code Works: " + responseCode);
             return responseCode == HttpsURLConnection.HTTP_OK; // Return true if the token is valid
         } catch (IOException e) {
             e.printStackTrace(); // Log the exception if needed
