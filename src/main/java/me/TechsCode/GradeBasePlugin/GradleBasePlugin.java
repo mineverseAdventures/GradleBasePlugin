@@ -109,7 +109,7 @@ public class GradleBasePlugin implements Plugin<Project> {
         Arrays.stream(relocations).map(entry -> entry.split("#")).forEach(fromTo -> getShadowJar(project).relocate(fromTo[0], fromTo[1].replace("PROJECT_NAME", project.getName())));
     }
 
-    /* After the build prcoess is completed, the file will be uploaded to all remotes */
+    /* After the build prcoess is completed, the file will be uploaded to all remotes. */
     private void uploadToRemotes(Task buildTask, DeploymentFile deploymentFile){
         File file = new File(deploymentFile.getLocalOutputPath()+"/"+buildTask.getProject().getName()+".jar");
 
