@@ -91,8 +91,8 @@ public class GradleBasePlugin implements Plugin<Project> {
 
         // Setting properties
         project.setProperty("version", meta.version);
-        project.setProperty("sourceCompatibility", "11");
-        project.setProperty("targetCompatibility", "11");
+        project.setProperty("sourceCompatibility", "17");
+        project.setProperty("targetCompatibility", "17");
 
         // Setting up repositories
         project.getRepositories().jcenter();

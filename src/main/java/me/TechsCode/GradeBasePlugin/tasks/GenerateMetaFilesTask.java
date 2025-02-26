@@ -20,6 +20,7 @@ public class GenerateMetaFilesTask extends DefaultTask {
         File resourcesFolder = new File(build.getAbsolutePath() + "/resources/main");
         resourcesFolder.mkdirs();
 
+        GradleBasePlugin.log("Generating ...");
         try {
             MetaExtension meta = getProject().getExtensions().getByType(MetaExtension.class);
             int buildNumber = getBuildNumber();
@@ -49,6 +50,8 @@ public class GenerateMetaFilesTask extends DefaultTask {
         if (load != null) writer.println("load: " + load);
 
         writer.close();
+        GradleBasePlugin.log("Generating file done");
+        
     }
 
     private void createBungeeYml(File resourcesFolder, String projectName, String projectVersion, int buildNumber) throws IOException {

@@ -45,7 +45,7 @@ public class ResourceManager {
         libraryFile.delete();
 
         System.out.println("Version: " + version);
-        
+
         String RETRIEVE_RELEASES = "https://api.github.com/repos/mineverseAdventures/BasePlugin/releases/tags/" + version;
 
         URL url = new URL(RETRIEVE_RELEASES);
