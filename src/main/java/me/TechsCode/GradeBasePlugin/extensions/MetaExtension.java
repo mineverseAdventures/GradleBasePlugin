@@ -8,7 +8,7 @@ import java.util.Random;
 public class MetaExtension {
 
     public String version;
-    public String baseVersion,BaseType;
+    public String baseVersion;
     public String loadAfter, loadBefore, load;
 
     public boolean validate() {
