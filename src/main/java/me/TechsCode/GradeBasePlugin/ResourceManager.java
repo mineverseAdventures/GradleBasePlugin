@@ -19,6 +19,7 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -40,7 +41,8 @@ public class ResourceManager {
 
         File libraryFile = new File(libraryFolder.getAbsolutePath() + "/BasePlugin.jar");
         libraryFile.delete();
-        System.out.println("Version" + version);
+
+        System.out.println("Version: " + version);
         String RETRIEVE_RELEASES = "https://api.github.com/repos/mineverseAdventures/BasePlugin/releases/tags/" + version;
 
         URL url = new URL(RETRIEVE_RELEASES);
@@ -48,39 +50,46 @@ public class ResourceManager {
         connection.setRequestProperty("Authorization", "Bearer " + githubToken);
         connection.setRequestMethod("GET");
 
+        // Read entire JSON response
+        String json;
+        try (InputStream stream = connection.getInputStream()) {
+            json = IOUtils.toString(stream, StandardCharsets.UTF_8);
+        }
 
+        System.out.println("JSON Response: " + json);
+
+        JSONParser parser = new JSONParser();
+        JSONObject root = null;
         try {
-            JSONParser parser = new JSONParser();
-            String json = IOUtils.toString(new URI(RETRIEVE_RELEASES), "UTF-8");
-            JSONObject root = (JSONObject) parser.parse(json);
-
-            JSONArray assets = (JSONArray) root.get("assets");
-            JSONObject asset = (JSONObject) assets.get(0);
-            System.out.println(asset);
-            System.out.println(asset.get("url"));
-
-            URL url2 = new URL((String) asset.get("url"));
-
-            HttpsURLConnection connection2 = (HttpsURLConnection) url2.openConnection();
-            connection2.setRequestProperty("Accept", "application/octet-stream");
-//            connection.setRequestProperty("Authorization", "token " + githubToken);
-            connection2.setRequestProperty("Authorization", "Bearer " + githubToken);
-            connection2.setRequestMethod("GET");
-
-            ReadableByteChannel uChannel = Channels.newChannel(connection.getInputStream());
-            FileOutputStream foStream = new FileOutputStream(libraryFile.getAbsolutePath());
-            FileChannel fChannel = foStream.getChannel();
-            fChannel.transferFrom(uChannel, 0, Long.MAX_VALUE);
-            uChannel.close();
-            foStream.close();
-            fChannel.close();
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
-            return false;
-        } catch (URISyntaxException e) {
+            root = (JSONObject) parser.parse(json);
+        } catch (ParseException e) {
             throw new RuntimeException(e);
         }
 
+        JSONArray assets = (JSONArray) root.get("assets");
+        if (assets == null || assets.isEmpty()) {
+            System.out.println("No assets found in the release.");
+            return false;
+        }
+
+        JSONObject asset = (JSONObject) assets.get(0);
+        String assetUrl = (String) asset.get("url");
+        System.out.println("Downloading from: " + assetUrl);
+
+        URL url2 = new URL(assetUrl);
+        HttpsURLConnection connection2 = (HttpsURLConnection) url2.openConnection();
+        connection2.setRequestProperty("Accept", "application/octet-stream");
+        connection2.setRequestProperty("Authorization", "Bearer " + githubToken);
+        connection2.setRequestMethod("GET");
+
+        // Use connection2's input stream for file download
+        try (ReadableByteChannel uChannel = Channels.newChannel(connection2.getInputStream());
+             FileOutputStream foStream = new FileOutputStream(libraryFile);
+             FileChannel fChannel = foStream.getChannel()) {
+            fChannel.transferFrom(uChannel, 0, Long.MAX_VALUE);
+        }
+
+        System.out.println("Download complete: " + libraryFile.getAbsolutePath());
         return true;
     }
     private static boolean isTokenValid(String token) {
