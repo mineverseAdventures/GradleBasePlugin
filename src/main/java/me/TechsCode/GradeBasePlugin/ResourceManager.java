@@ -1,5 +1,6 @@
 package me.TechsCode.GradeBasePlugin;
 
+import me.TechsCode.GradeBasePlugin.extensions.MetaExtension;
 import org.apache.commons.io.IOUtils;
 import org.gradle.api.Project;
 import org.json.simple.JSONArray;
@@ -25,6 +26,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 public class ResourceManager {
+    private static MetaExtension meta;
 
     public static boolean loadBasePlugin(Project project, String githubToken, String version) throws IOException {
 
@@ -42,9 +44,13 @@ public class ResourceManager {
         File libraryFile = new File(libraryFolder.getAbsolutePath() + "/BasePlugin.jar");
         libraryFile.delete();
 
-        System.out.println("Version: " + version);
-        String RETRIEVE_RELEASES = "https://api.github.com/repos/mineverseAdventures/BasePlugin/releases/tags/" + version;
-
+        String RETRIEVE_RELEASES = "";
+        if(meta.BaseType.equalsIgnoreCase("BasePluginLite")){
+            RETRIEVE_RELEASES = "https://api.github.com/repos/mineverseAdventures/BasePluginLite/releases/tags/" + version;
+        }
+        if(meta.BaseType.equalsIgnoreCase("BasePlugin")) {
+            RETRIEVE_RELEASES = "https://api.github.com/repos/mineverseAdventures/BasePlugin/releases/tags/" + version;
+        }
         URL url = new URL(RETRIEVE_RELEASES);
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.setRequestProperty("Authorization", "Bearer " + githubToken);

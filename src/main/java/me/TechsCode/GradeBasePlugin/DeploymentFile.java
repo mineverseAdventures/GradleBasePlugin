@@ -1,6 +1,7 @@
 package me.TechsCode.GradeBasePlugin;
 
 import com.jcraft.jsch.*;
+import me.TechsCode.GradeBasePlugin.extensions.MetaExtension;
 import org.apache.commons.io.FileUtils;
 import org.gradle.api.Project;
 import org.gradle.internal.impldep.com.google.gson.JsonObject;
@@ -22,6 +23,7 @@ import java.util.stream.StreamSupport;
 public class DeploymentFile {
 
     private static JSONObject root;
+    private MetaExtension meta;
 
     public DeploymentFile(Project project) {
         File global = new File(System.getProperty("user.home") + "/deployment.json");

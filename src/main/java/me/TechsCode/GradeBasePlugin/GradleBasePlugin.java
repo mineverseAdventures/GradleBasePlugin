@@ -34,6 +34,7 @@ public class GradleBasePlugin implements Plugin<Project> {
 
     private MetaExtension meta;
     private String githubToken;
+    private String BaseType;
 
     @Override
     public void apply(Project project) {
