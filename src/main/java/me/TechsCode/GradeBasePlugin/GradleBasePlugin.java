@@ -21,7 +21,7 @@ public class GradleBasePlugin implements Plugin<Project> {
     };
 
     private static final String[] dependencies = new String[]{
-            "compileOnly#org.spigotmc:spigot-api:1.21.4-R0.1-SNAPSHOT",
+            "compileOnly#org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT",
             "compileOnly#net.md-5:bungeecord-api:1.21-R0.1-SNAPSHOT"
 
     };
